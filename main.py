@@ -10,7 +10,6 @@ from torch.utils.data import DataLoader
 import lightning_fabric as lf
 
 from engine import FeatureExtractor
-from dataloader.dataloader_mnist import training_data, test_data
 
 
 ## Parse arguments
@@ -39,16 +38,20 @@ def train():
     # sets seeds for numpy, torch and python.random.    
     lf.utilities.seed.seed_everything(seed = config['random_seed'])
 
-    # ⚡⚡ 1. Set 'Dataset', 'DataLoader'    
+    # ⚡⚡ 1. Set 'Dataset', 'DataLoader'
+
+    training_dataset = importlib.import_module('dataloader.' + config['dataloader']).__getattribute__("training_dataset")
+    test_dataset = importlib.import_module('dataloader.' + config['dataloader']).__getattribute__("test_dataset")
+
     train_dataloader = DataLoader(
-            dataset = training_data,
+            dataset = training_dataset,
             batch_size=config['batch_size'],
             num_workers=config['num_workers'],
             pin_memory=True
         )
 
     test_dataloader = DataLoader(
-            dataset = test_data,
+            dataset = test_dataset,
             batch_size=config['batch_size'],
             num_workers=config['num_workers'],
             pin_memory=True

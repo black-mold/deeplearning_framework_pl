@@ -33,7 +33,7 @@ num_sanity_val_steps: -1
 
 
 # save, load
-resume_checkpoint: ./results/mnist/lightning_logs/version_0/checkpoints/sample-mnist-epoch=05-val_loss=0.35-val_ACC=87.72.ckpt
+resume_checkpoint: 
 
 # random seed
 random_seed: 2301235
