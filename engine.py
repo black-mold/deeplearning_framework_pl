@@ -89,7 +89,7 @@ class FeatureExtractor(pl.LightningModule):
 
 
     def forward(self, x):
-        y_hat = x
+        y_hat = self.model(x)
         return y_hat
 
 
