@@ -41,7 +41,9 @@ def train():
     # ⚡⚡ 1. Set 'Dataset', 'DataLoader'
 
     training_dataset = importlib.import_module('dataloader.' + config['dataloader']).__getattribute__("training_dataset")
+    training_dataset = training_dataset()
     test_dataset = importlib.import_module('dataloader.' + config['dataloader']).__getattribute__("test_dataset")
+    test_dataset = test_dataset()
 
     train_dataloader = DataLoader(
             dataset = training_dataset,

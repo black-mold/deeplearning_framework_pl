@@ -2,6 +2,9 @@
 dataloader: dataloader_mnist
 batch_size: 64
 num_workers: 8
+train_dataset_config:
+test_dataset_config:
+
 
 
 # 2. Model
