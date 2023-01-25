@@ -124,8 +124,11 @@ def test():
     lf.utilities.seed.seed_everything(seed = config['random_seed'])
 
     # ⚡⚡ 1. Set 'Dataset', 'DataLoader' 
+    test_dataset = importlib.import_module('dataloader.' + config['dataloader']).__getattribute__("test_dataset")
+    test_dataset = test_dataset()
+
     test_dataloader = DataLoader(
-            dataset = test_data,
+            dataset = test_dataset,
             batch_size=config['batch_size'],
             num_workers=config['num_workers'],
             pin_memory=True
