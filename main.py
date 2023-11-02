@@ -4,8 +4,8 @@ import torch
 import sys
 import importlib
 
-import pytorch_lightning as pl
-from pytorch_lightning.callbacks import ModelCheckpoint
+import lightning.pytorch as pl
+from lightning.pytorch.callbacks import ModelCheckpoint
 from torch.utils.data import DataLoader
 import lightning_fabric as lf
 
@@ -76,12 +76,6 @@ def train():
     # ⚡⚡  3. Set 'engine' for training/validation and 'Trainer' 
     feature_extractor = FeatureExtractor(model = model, optimizer=optimizer, loss_function=loss_function, scheduler=scheduler) 
 
-    # resume training from an old checkpoint
-    # if config['resume_checkpoint']  is not None:
-    #     feature_extractor = feature_extractor.load_from_checkpoint(model = model, optimizer=optimizer, loss_function=loss_function, scheduler=scheduler, checkpoint_path = config['resume_checkpoint'])
-    #     print(config['resume_checkpoint'] + "are loaded")
-
-
     # ⚡⚡ 4. Init ModelCheckpoint callback, monitoring "val_ACC"
     checkpoint_callback = ModelCheckpoint(
         save_top_k=10,
@@ -97,12 +91,10 @@ def train():
         devices = config['devices'], #
         val_check_interval = 1.0, # Check val every n train epochs.
         max_epochs = config['max_epoch'], #
-        auto_lr_find = True, # ⚡⚡
         sync_batchnorm = True, # ⚡⚡
         callbacks = [checkpoint_callback], #
         accelerator = config['accelerator'], #
         num_sanity_val_steps = config['num_sanity_val_steps'], # Sanity check runs n batches of val before starting the training routine. This catches any bugs in your validation without having to wait for the first validation check. 
-        replace_sampler_ddp = False, # ⚡⚡
         gradient_clip_val=1.0, # ⚡⚡
         profiler = config['profiler'], #
     )
