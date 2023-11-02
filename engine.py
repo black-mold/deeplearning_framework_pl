@@ -108,6 +108,7 @@ class FeatureExtractor(pl.LightningModule):
             "optimizer": self.optimizer,
             "lr_scheduler": {
                 "scheduler": self.scheduler,
+                'interval': self.scheduler.update, # ⚡⚡ "step" or "epoch"
                 "monitor": "val_loss",
                 "frequency": 1,
                 "name": "lr_log",

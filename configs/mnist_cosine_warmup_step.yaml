@@ -1,0 +1,42 @@
+# 1. DataLoader
+dataloader: dataloader_mnist
+batch_size: 64
+num_workers: 8
+train_dataset_config:
+test_dataset_config:
+
+
+
+# 2. Model
+model: linear_mnist
+
+# 2. Optimizer
+optimizer: adam
+optimizer_config:
+  lr: 0.001
+  weight_decay: 0
+
+# 2. LossFunction
+loss: clip_ce
+
+# 2. Scheduler
+scheduler: cosine_warmup_step
+scheduler_config:
+  warmup: 5 # unit: epoch
+  update: step
+
+
+# trainer
+default_root_dir: ./results/mnist_cosine_warmup_step
+profiler: advanced
+max_epoch: 200
+devices: 1
+accelerator: gpu
+num_sanity_val_steps: -1
+
+
+# save, load
+resume_checkpoint: 
+
+# random seed
+random_seed: 2301235

@@ -8,6 +8,7 @@ import lightning.pytorch as pl
 from lightning.pytorch.callbacks import ModelCheckpoint
 from torch.utils.data import DataLoader
 import lightning_fabric as lf
+from lightning.pytorch.callbacks import LearningRateMonitor
 
 from engine import FeatureExtractor
 
@@ -70,7 +71,14 @@ def train():
     loss_function = importlib.import_module("loss." + config['loss']).__getattribute__("loss_function")
 
     scheduler = importlib.import_module("scheduler." + config['scheduler']).__getattribute__("Scheduler")
-    scheduler = scheduler(optimizer, **config['scheduler_config'])
+
+    # only for step scheduler(cosine_warmup_step.py)
+    STEPS_PER_EPOCH = len(train_dataloader) # same as iteration per epoch
+    TOTAL_EPOCH = config['max_epoch']
+    config['scheduler_config']['warmup'] = config['scheduler_config']['warmup'] * STEPS_PER_EPOCH
+    TOTAL_ITERATION = TOTAL_EPOCH * STEPS_PER_EPOCH
+
+    scheduler = scheduler(optimizer, max_iters = TOTAL_ITERATION, **config['scheduler_config'])
 
 
     # ⚡⚡  3. Set 'engine' for training/validation and 'Trainer' 
@@ -84,6 +92,8 @@ def train():
         filename="sample-mnist-{epoch:02d}-{val_loss:.2f}-{val_ACC:02.2f}",
     )
 
+    lr_monitor = LearningRateMonitor(logging_interval='step')
+
     # ⚡⚡ 5. LightningModule
     trainer = pl.Trainer(
         deterministic=True, # Might make your system slower, but ensures reproducibility.
@@ -92,7 +102,7 @@ def train():
         val_check_interval = 1.0, # Check val every n train epochs.
         max_epochs = config['max_epoch'], #
         sync_batchnorm = True, # ⚡⚡
-        callbacks = [checkpoint_callback], #
+        callbacks = [checkpoint_callback, lr_monitor], #
         accelerator = config['accelerator'], #
         num_sanity_val_steps = config['num_sanity_val_steps'], # Sanity check runs n batches of val before starting the training routine. This catches any bugs in your validation without having to wait for the first validation check. 
         gradient_clip_val=1.0, # ⚡⚡
