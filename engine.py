@@ -93,8 +93,8 @@ class FeatureExtractor(pl.LightningModule):
     def test_step(self, batch, batch_idx):
         return self.validation_step(batch, batch_idx)
     
-    def test_epoch_end(self,  test_step_outputs):
-        return self.validation_epoch_end(test_step_outputs)
+    def on_test_epoch_end(self):
+        return self.on_validation_epoch_end()
     
 
 

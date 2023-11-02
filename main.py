@@ -143,7 +143,7 @@ def test():
     feature_extractor = FeatureExtractor.load_from_checkpoint(model = model, optimizer=optimizer, loss_function=loss_function, scheduler=scheduler, checkpoint_path = config['resume_checkpoint'])
 
     # ⚡⚡ 4. LightningModule
-    trainer = pl.Trainer(accelerator=config['accelerator'], gpus = config['devices'])
+    trainer = pl.Trainer(accelerator=config['accelerator'], devices = config['devices'])
 
     trainer.test(feature_extractor, dataloaders=test_dataloader)
 
